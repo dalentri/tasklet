@@ -1,0 +1,15 @@
+/Users/aydenmason/Documents/Code/csharp/projects/tasklet/bin/Debug/net9.0/tasklet
+/Users/aydenmason/Documents/Code/csharp/projects/tasklet/bin/Debug/net9.0/tasklet.deps.json
+/Users/aydenmason/Documents/Code/csharp/projects/tasklet/bin/Debug/net9.0/tasklet.runtimeconfig.json
+/Users/aydenmason/Documents/Code/csharp/projects/tasklet/bin/Debug/net9.0/tasklet.dll
+/Users/aydenmason/Documents/Code/csharp/projects/tasklet/bin/Debug/net9.0/tasklet.pdb
+/Users/aydenmason/Documents/Code/csharp/projects/tasklet/obj/Debug/net9.0/tasklet.GeneratedMSBuildEditorConfig.editorconfig
+/Users/aydenmason/Documents/Code/csharp/projects/tasklet/obj/Debug/net9.0/tasklet.AssemblyInfoInputs.cache
+/Users/aydenmason/Documents/Code/csharp/projects/tasklet/obj/Debug/net9.0/tasklet.AssemblyInfo.cs
+/Users/aydenmason/Documents/Code/csharp/projects/tasklet/obj/Debug/net9.0/tasklet.csproj.CoreCompileInputs.cache
+/Users/aydenmason/Documents/Code/csharp/projects/tasklet/obj/Debug/net9.0/tasklet.sourcelink.json
+/Users/aydenmason/Documents/Code/csharp/projects/tasklet/obj/Debug/net9.0/tasklet.dll
+/Users/aydenmason/Documents/Code/csharp/projects/tasklet/obj/Debug/net9.0/refint/tasklet.dll
+/Users/aydenmason/Documents/Code/csharp/projects/tasklet/obj/Debug/net9.0/tasklet.pdb
+/Users/aydenmason/Documents/Code/csharp/projects/tasklet/obj/Debug/net9.0/tasklet.genruntimeconfig.cache
+/Users/aydenmason/Documents/Code/csharp/projects/tasklet/obj/Debug/net9.0/ref/tasklet.dll
