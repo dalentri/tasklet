@@ -1,9 +1,6 @@
 ﻿using System;
 using System.Text.Json;
 
-// Import all other files
-// using tasklet.src.Data;
-using tasklet.src.Models;
 
 namespace tasklet.Cli
 {
@@ -20,58 +17,88 @@ namespace tasklet.Cli
                 return;
             }
 
-            //TODO: Check for json file, if not present, create a new one
-
             // handles the first argument
-            switch (args[0])
+            if (args.Length > 0)
             {
-                // Adds a new task to the list
-                // Steps:
-                // 1. Read the existing json file for tasks (or create new one)
-                // 2. Deserialize the list of pre-existing tasks
-                // 3. Add the new task to the list
-                // 4. Serialize the list back into json
-                // 5. Write new list to the json file
-                case "add":
-                    // Checks to see if tasks.json is in the 
-                    if (!File.Exists("tasks.json"))
-                    {
-                        File.WriteAllText("tasks.json", "[]");
-                    }
-                    else if (File.Exists("tasks.json"))
-                    {
-                        string taskList = File.ReadAllText("tasks.json");
-                    }
+                switch (args[0])
+                {
+                    // Adds a new task to the list
+                    // Steps:
+                    // 1. Read the existing json file for tasks (or create new one)
+                    // 2. Deserialize the list of pre-existing tasks
+                    // 3. Add the new task to the list
+                    // 4. Serialize the list back into json
+                    // 5. Write new list to the json file
+                    case "add":
 
-                    // Creates a new task object 
-                    tasklet.src.Models.Task newTask = new tasklet.src.Models.Task();
+                        if (args.Length != 2)
+                        {
+                            Console.WriteLine("Incorrect usage of 'add'");
+                            Console.WriteLine("Correct usage is 'add \"description\"'");
+                            return;
+                        }
+                        // Makes a new list object to be populated 
+                        List<tasklet.src.Models.Task> taskList = new List<tasklet.src.Models.Task>();
 
-                    // Assign variables to the new string
-                    // newTask.Id = 
-                    args[1] = newTask.Description;
-                    newTask.Status = "not-started";
-                    newTask.createdAt = DateTime.Now;
-                    newTask.updatedAt = DateTime.Now;
+                        // Checks to see if tasks.json is in the file system
+                        if (!File.Exists("tasks.json"))
+                        {
+                            File.WriteAllText("tasks.json", "[]");
+                        }
+                        else if (File.Exists("tasks.json"))
+                        {
+                            string taskListJSON = File.ReadAllText("tasks.json");
+                            taskList = JsonSerializer.Deserialize<List<tasklet.src.Models.Task>>(taskListJSON);
+                        }
 
+                        // Creates a new task object 
+                        tasklet.src.Models.Task newTask = new tasklet.src.Models.Task();
 
+                        // Assign variables to the new string
+                        newTask.Id = taskList.Count + 1;
+                        newTask.Description = args[1];
+                        newTask.Status = "not-started";
+                        newTask.createdAt = DateTime.Now;
+                        newTask.updatedAt = DateTime.Now;
 
-                    File.WriteAllText("tasks.json", JsonSerializer.Serialize(newTask));
-                    break;
-                case "update":
-                    int index = Int32.Parse(args[1]);
-                    string newDescription = args[2];
-                    break;
-                case "delete":
-                    break;
-                // Marks the task's status
-                // Syntax: tasklet mark not-started
-                // Possible values: not-started -> in-progress -> done
-                case "mark":
-                    break;
-                case "list":
-                    break;
-                default:
-                    break;
+                        taskList.Add(newTask);
+
+                        // Serialize and write the task
+                        File.WriteAllText("tasks.json", JsonSerializer.Serialize(taskList));
+
+                        Console.WriteLine(newTask.Description + " added at index " + newTask.Id);
+                        break;
+                    case "update":
+                        int index = Int32.Parse(args[1]);
+                        string newDescription = args[2];
+                        break;
+                    case "delete":
+                        break;
+                    // Marks the task's status
+                    // Syntax: tasklet mark not-started
+                    // Possible values: not-started -> in-progress -> done
+                    case "mark":
+                        break;
+                    case "list":
+                        if (!File.Exists("tasks.json"))
+                        {
+                            Console.WriteLine("Tasks list is empty");
+                        }
+                        else if (File.Exists("tasks.json"))
+                        {
+                            string taskListJSON = File.ReadAllText("tasks.json");
+                            taskList = JsonSerializer.Deserialize<List<tasklet.src.Models.Task>>(taskListJSON);
+
+                            foreach (var item in taskList)
+                            {
+                                Console.WriteLine(item.Id + item.Description + item.Status + item.createdAt + item.updatedAt);
+                            }
+                        }
+                        break;
+                    default:
+                        Console.WriteLine("not a valid command.");
+                        break;
+                }
             }
         }
     }
