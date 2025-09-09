@@ -22,6 +22,20 @@ namespace tasklet.Cli
             {
                 switch (args[0])
                 {
+                    case "help":
+                        Console.WriteLine("Commands");
+                        Console.WriteLine("--------------------------------\n");
+                        Console.WriteLine("help, \tOpens the command menu");
+                        Console.WriteLine("add \"Task description\", \tAdds a task to the task list");
+                        Console.WriteLine("update [index] \"New task description\", \tUpdates a pre-existing task");
+                        Console.WriteLine("list, \tLists all tasks");
+                        Console.WriteLine("list [status], \tLists tasks by status");
+                        Console.WriteLine("delete [index], \tDeletes a task at the desired index");
+                        Console.WriteLine("mark [status], \tChanges the status of a task");
+                        break;
+
+
+
                     // Adds a new task to the list
                     // Steps:
                     // 1. Read the existing json file for tasks (or create new one)
@@ -74,10 +88,34 @@ namespace tasklet.Cli
                         break;
                     case "delete":
                         break;
+                    //TODO: Mark command
                     // Marks the task's status
                     // Syntax: tasklet mark not-started
                     // Possible values: not-started -> in-progress -> done
                     case "mark":
+                        string newStatus = args[0];
+                        int desiredIndex = Int32.Parse(args[1]);
+
+                        // Checks it tasks.json exists before preceeding
+                        if (!File.Exists("tasks.json"))
+                        {
+                            Console.WriteLine("Task data not found.");
+                            return;
+                        }
+                        else if (File.Exists("tasks.json"))
+                        {
+                            string taskListJSON = File.ReadAllText("tasks.json");
+                            taskList = JsonSerializer.Deserialize<List<tasklet.src.Models.Task>>(taskListJSON);
+
+                            // Check if index is even valid
+                            if (taskList.Count == 0 || desiredIndex > taskList.Count)
+                            {
+                                Console.WriteLine("Index was unable to be found.");
+                                return;
+                            }
+
+
+                        }
                         break;
                     case "list":
                         if (!File.Exists("tasks.json"))
