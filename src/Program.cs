@@ -14,7 +14,14 @@ namespace tasklet.Cli
             {
                 Console.WriteLine("Welcome to tasklet!");
                 Console.WriteLine("Type 'tasklet help' for a list of commands");
+
                 return;
+            }
+
+            // Makes sure data file exists before handling commands
+            if (!File.Exists("tasks.json"))
+            {
+                File.WriteAllText("tasks.json", "[]");
             }
 
             // handles the first argument
@@ -85,6 +92,8 @@ namespace tasklet.Cli
                     case "update":
                         int index = Int32.Parse(args[1]);
                         string newDescription = args[2];
+
+
                         break;
                     case "delete":
                         break;
@@ -93,8 +102,16 @@ namespace tasklet.Cli
                     // Syntax: tasklet mark not-started
                     // Possible values: not-started -> in-progress -> done
                     case "mark":
-                        string newStatus = args[0];
-                        int desiredIndex = Int32.Parse(args[1]);
+                        string[] allowedStatus = { "not-started", "in-progress", "finished" };
+
+                        string newStatus = args[1];
+                        int desiredIndex = Int32.Parse(args[2]);
+
+                        if (!allowedStatus.Contains(newStatus))
+                        {
+                            Console.WriteLine("Invalid status");
+                            return;
+                        }
 
                         // Checks it tasks.json exists before preceeding
                         if (!File.Exists("tasks.json"))
@@ -114,8 +131,16 @@ namespace tasklet.Cli
                                 return;
                             }
 
-
+                            foreach (var task in taskList)
+                            {
+                                if (task.Id == desiredIndex)
+                                {
+                                    task.Status = newStatus;
+                                }
+                            }
                         }
+
+                        Console.WriteLine("Sucessfully marked task " + desiredIndex + " as " + newStatus);
                         break;
                     case "list":
                         if (!File.Exists("tasks.json"))
