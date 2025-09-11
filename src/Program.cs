@@ -23,7 +23,11 @@ namespace tasklet.Cli
             if (!File.Exists("tasks.json"))
             {
                 File.WriteAllText("tasks.json", "[]");
+
             }
+
+            string taskListJSON = File.ReadAllText("tasks.json");
+            List<tasklet.src.Models.Task> taskList = JsonSerializer.Deserialize<List<tasklet.src.Models.Task>>(taskListJSON);
 
             // handles the first argument
             if (args.Length > 0)
@@ -42,8 +46,6 @@ namespace tasklet.Cli
                         Console.WriteLine("mark [status], \tChanges the status of a task");
                         break;
 
-
-
                     // Adds a new task to the list
                     // Steps:
                     // 1. Read the existing json file for tasks (or create new one)
@@ -59,19 +61,7 @@ namespace tasklet.Cli
                             Console.WriteLine("Correct usage is 'add \"description\"'");
                             return;
                         }
-                        // Makes a new list object to be populated 
-                        List<tasklet.src.Models.Task> taskList = new List<tasklet.src.Models.Task>();
 
-                        // Checks to see if tasks.json is in the file system
-                        if (!File.Exists("tasks.json"))
-                        {
-                            File.WriteAllText("tasks.json", "[]");
-                        }
-                        else if (File.Exists("tasks.json"))
-                        {
-                            string taskListJSON = File.ReadAllText("tasks.json");
-                            taskList = JsonSerializer.Deserialize<List<tasklet.src.Models.Task>>(taskListJSON);
-                        }
 
                         // Creates a new task object 
                         tasklet.src.Models.Task newTask = new tasklet.src.Models.Task();
@@ -101,8 +91,6 @@ namespace tasklet.Cli
                         }
                         else if (File.Exists("tasks.json"))
                         {
-                            string taskListJSON = File.ReadAllText("tasks.json");
-                            taskList = JsonSerializer.Deserialize<List<tasklet.src.Models.Task>>(taskListJSON);
 
                             // Check if index is even valid
                             if (taskList.Count == 0 || desiredUpdateIndex > taskList.Count)
@@ -126,6 +114,7 @@ namespace tasklet.Cli
                     // delete all
                     // delete [index]
                     case "delete":
+
                         // Check for file Existence
                         if (!File.Exists("tasks.json"))
                         {
@@ -133,8 +122,31 @@ namespace tasklet.Cli
                             return;
                         }
 
-                        string taskListJSON = File.ReadAllText("tasks.json");
-                        taskList = JsonSerializer.Deserialize<List<tasklet.src.Models.Task>>(taskListJSON);
+
+                        // argument check
+                        if (args[1] == "all")
+                        {
+                            string deleteArg = args[1];
+                            File.WriteAllText("tasks.json", []);
+                            return;
+                        }
+
+                        int deleteIndex = Int32.Parse(args[1]);
+
+                        if (taskList.Count == 0 || deleteIndex > taskList.Count)
+                        {
+                            Console.WriteLine("Index " + deleteIndex + " was unable to be found.");
+                            return;
+                        }
+
+                        foreach (var task in taskList)
+                        {
+                            if (task.Id == deleteIndex)
+                            {
+
+                            }
+                        }
+
 
 
                         break;
@@ -159,8 +171,6 @@ namespace tasklet.Cli
                         }
                         else if (File.Exists("tasks.json"))
                         {
-                            string taskListJSON = File.ReadAllText("tasks.json");
-                            taskList = JsonSerializer.Deserialize<List<tasklet.src.Models.Task>>(taskListJSON);
 
                             // Check if index is even valid
                             if (taskList.Count == 0 || desiredMarkIndex > taskList.Count)
@@ -181,31 +191,22 @@ namespace tasklet.Cli
                         Console.WriteLine("Sucessfully marked task " + desiredMarkIndex + " as " + newStatus);
                         break;
                     case "list":
-                        if (!File.Exists("tasks.json"))
-                        {
-                            Console.WriteLine("Tasks list is empty");
-                        }
-                        else if (File.Exists("tasks.json"))
-                        {
-                            string taskListJSON = File.ReadAllText("tasks.json");
-                            taskList = JsonSerializer.Deserialize<List<tasklet.src.Models.Task>>(taskListJSON);
 
-                            foreach (var task in taskList)
+                        foreach (var task in taskList)
+                        {
+                            Console.WriteLine(task.Id);
+                            if (task.Description == "" || task.Description == null)
                             {
-                                Console.WriteLine(task.Id);
-                                if (task.Description == "" || task.Description == null)
-                                {
-                                    Console.WriteLine("[No description provided]");
-                                }
-                                else
-                                {
-                                    Console.WriteLine(task.Description);
-                                }
-                                Console.WriteLine(task.Status);
-                                Console.WriteLine(task.CreatedAt);
-                                Console.WriteLine(task.UpdatedAt);
-                                Console.WriteLine("");
+                                Console.WriteLine("[No description provided]");
                             }
+                            else
+                            {
+                                Console.WriteLine(task.Description);
+                            }
+                            Console.WriteLine(task.Status);
+                            Console.WriteLine(task.CreatedAt);
+                            Console.WriteLine(task.UpdatedAt);
+                            Console.WriteLine("");
                         }
                         break;
                     default:
