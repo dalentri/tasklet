@@ -27,7 +27,29 @@ namespace tasklet.Cli
             }
 
             string taskListJSON = File.ReadAllText("tasks.json");
-            List<tasklet.src.Models.Task> taskList = JsonSerializer.Deserialize<List<tasklet.src.Models.Task>>(taskListJSON);
+            List<tasklet.src.Models.Task>? deserializedList;
+
+            if (taskListJSON == "")
+            {
+                Console.WriteLine("Task list is empty, please add a task.");
+                return;
+            }
+
+            deserializedList = JsonSerializer.Deserialize<List<tasklet.src.Models.Task>>(taskListJSON);
+
+            // Initializing tasklist
+            List<tasklet.src.Models.Task> taskList;
+
+            // Check for null (empty list)
+            if (deserializedList == null)
+            {
+                taskList = new List<tasklet.src.Models.Task>();
+            }
+            else
+            {
+
+                taskList = deserializedList;
+            }
 
             // handles the first argument
             if (args.Length > 0)
@@ -122,11 +144,10 @@ namespace tasklet.Cli
                             return;
                         }
 
-
                         // argument check
                         if (args[1] == "all")
                         {
-                            string deleteArg = args[1];
+                            Console.WriteLine("Deleting all tasks.");
                             File.WriteAllText("tasks.json", []);
                             return;
                         }
@@ -139,13 +160,15 @@ namespace tasklet.Cli
                             return;
                         }
 
-                        foreach (var task in taskList)
+                        // Finds the task the user wants to delete
+                        tasklet.src.Models.Task deleteObject = taskList.Find(task => task.Id == deleteIndex);
+                        if (deleteObject == null)
                         {
-                            if (task.Id == deleteIndex)
-                            {
-
-                            }
+                            Console.WriteLine("No object found");
+                            return;
                         }
+
+                        taskList.Remove(deleteObject);
 
 
 
@@ -191,6 +214,12 @@ namespace tasklet.Cli
                         Console.WriteLine("Sucessfully marked task " + desiredMarkIndex + " as " + newStatus);
                         break;
                     case "list":
+
+                        if (taskList.Count == 0)
+                        {
+                            // Console.WriteLine("No tasks in task list.");
+                            return;
+                        }
 
                         foreach (var task in taskList)
                         {
